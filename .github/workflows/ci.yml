@@ -1,0 +1,106 @@
+name: CI - Build & Validate Extension
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-validate:
+    name: Build and Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Build extension
+        run: npm run build
+        env:
+          # Allow missing icons in CI for now, but log warnings
+          CI: true
+
+      - name: Validate build artifacts
+        run: |
+          echo "Validating extension artifacts..."
+          
+          # Check manifest exists
+          if [ ! -f dist/manifest.json ]; then
+            echo "❌ manifest.json missing"
+            exit 1
+          fi
+          echo "✓ manifest.json exists"
+
+          # Check bundles exist
+          if [ ! -f dist/content.js ]; then
+            echo "❌ content.js missing"
+            exit 1
+          fi
+          echo "✓ content.js exists"
+
+          if [ ! -f dist/popup.js ]; then
+            echo "❌ popup.js missing"
+            exit 1
+          fi
+          echo "✓ popup.js exists"
+
+          # Check popup HTML exists
+          if [ ! -f dist/popup.html ]; then
+            echo "❌ popup.html missing"
+            exit 1
+          fi
+          echo "✓ popup.html exists"
+
+          # Check icons (warn if missing, don't fail)
+          if [ ! -d dist/icons ]; then
+            echo "⚠️  icons directory missing (expected for full release)"
+          else
+            echo "✓ icons directory exists"
+          fi
+
+          echo "✅ All critical artifacts validated"
+
+      - name: Package extension
+        run: |
+          cd dist
+          zip -r ../websketch-extension.zip .
+          cd ..
+          ls -lh websketch-extension.zip
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: websketch-extension
+          path: websketch-extension.zip
+          retention-days: 30
+
+      - name: Upload dist directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
