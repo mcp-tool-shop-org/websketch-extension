@@ -17,7 +17,7 @@
     "validate": "npm run typecheck && npm run lint && npm run test:run && npm run build"
   },
   "dependencies": {
-    "@websketch/ir": "^0.1.0"
+    "@mcptoolshop/websketch-ir": "^0.2.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.260",
@@ -33,15 +33,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcp-tool-shop/websketch-extension.git"
+    "url": "git+https://github.com/mcp-tool-shop-org/websketch-extension.git"
   },
   "bugs": {
-    "url": "https://github.com/mcp-tool-shop/websketch-extension/issues"
+    "url": "https://github.com/mcp-tool-shop-org/websketch-extension/issues"
   },
   "keywords": [
     "chrome-extension",
     "websketch",
     "ui-capture",
     "web-scraping"
-  ]
+  ],
+  "homepage": "https://github.com/mcp-tool-shop-org/websketch-extension#readme"
 }

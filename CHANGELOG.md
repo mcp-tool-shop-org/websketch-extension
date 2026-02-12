@@ -39,5 +39,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript configuration
 - Basic documentation
 
-[Unreleased]: https://github.com/mcp-tool-shop/websketch-extension/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/mcp-tool-shop/websketch-extension/releases/tag/v0.1.0
+[Unreleased]: https://github.com/mcp-tool-shop-org/websketch-extension/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/mcp-tool-shop-org/websketch-extension/releases/tag/v0.1.0

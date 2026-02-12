@@ -1,9 +1,9 @@
 # websketch-extension
 
-[![CI - Build & Validate Extension](https://github.com/mcp-tool-shop/websketch-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop/websketch-extension/actions/workflows/ci.yml)
+[![CI - Build & Validate Extension](https://github.com/mcp-tool-shop-org/websketch-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/websketch-extension/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Chrome extension to capture web pages as [WebSketch IR](https://github.com/mcp-tool-shop/websketch-ir).
+Chrome extension to capture web pages as [WebSketch IR](https://github.com/mcp-tool-shop-org/websketch-ir).
 
 ## Features
 
@@ -19,7 +19,7 @@ Chrome extension to capture web pages as [WebSketch IR](https://github.com/mcp-t
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/mcp-tool-shop/websketch-extension.git
+   git clone https://github.com/mcp-tool-shop-org/websketch-extension.git
    cd websketch-extension
    ```
 
@@ -227,8 +227,8 @@ MIT - see [LICENSE](LICENSE) file for details.
 
 ## Links
 
-- **WebSketch IR**: [github.com/mcp-tool-shop/websketch-ir](https://github.com/mcp-tool-shop/websketch-ir)
-- **Issues**: [github.com/mcp-tool-shop/websketch-extension/issues](https://github.com/mcp-tool-shop/websketch-extension/issues)
+- **WebSketch IR**: [github.com/mcp-tool-shop-org/websketch-ir](https://github.com/mcp-tool-shop-org/websketch-ir)
+- **Issues**: [github.com/mcp-tool-shop-org/websketch-extension/issues](https://github.com/mcp-tool-shop-org/websketch-extension/issues)
 - **Chrome Extensions Documentation**: [developer.chrome.com/docs/extensions](https://developer.chrome.com/docs/extensions)
 
 ## Support

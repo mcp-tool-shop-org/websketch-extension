@@ -2,7 +2,7 @@
  * Content script - Captures the current page as WebSketch IR
  */
 
-import type { Capture } from '@websketch/ir';
+import type { Capture } from '@mcptoolshop/websketch-ir';
 
 interface Message {
   type: string;
