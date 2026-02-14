@@ -4,7 +4,7 @@
 
 interface CaptureResponse {
   success: boolean;
-  capture?: any;
+  capture?: Record<string, unknown>;
   error?: string;
 }
 
