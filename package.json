@@ -4,6 +4,9 @@
   "description": "Chrome extension to capture web pages as WebSketch IR",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "build": "node build.js",
     "dev": "node build.js --watch",
