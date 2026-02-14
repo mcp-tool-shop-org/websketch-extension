@@ -46,10 +46,7 @@ jobs:
           fi
 
       - name: Build extension
-        run: npm run build
-        env:
-          # Allow missing icons in CI for now, but log warnings
-          CI: true
+        run: node build.js --allow-missing
 
       - name: Validate build artifacts
         run: |
