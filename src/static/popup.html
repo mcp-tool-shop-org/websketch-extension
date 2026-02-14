@@ -19,14 +19,31 @@
         background: #f8f9fa;
       }
 
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
       h1 {
         font-size: 18px;
         font-weight: 600;
         color: #1a202c;
-        margin-bottom: 16px;
       }
 
-      button {
+      .settings-link {
+        font-size: 13px;
+        color: #64748b;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .settings-link:hover {
+        color: #2563eb;
+      }
+
+      button#capture-btn {
         width: 100%;
         padding: 12px;
         background: #2563eb;
@@ -39,11 +56,11 @@
         transition: background 0.2s;
       }
 
-      button:hover:not(:disabled) {
+      button#capture-btn:hover:not(:disabled) {
         background: #1d4ed8;
       }
 
-      button:disabled {
+      button#capture-btn:disabled {
         background: #94a3b8;
         cursor: not-allowed;
       }
@@ -66,6 +83,11 @@
         color: #991b1b;
       }
 
+      .status.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
       #output {
         margin-top: 12px;
         padding: 12px;
@@ -86,7 +108,10 @@
     </style>
   </head>
   <body>
-    <h1>WebSketch Capture</h1>
+    <div class="header">
+      <h1>WebSketch Capture</h1>
+      <a id="settings-link" class="settings-link" href="#">Settings</a>
+    </div>
     <button id="capture-btn">Capture Current Page</button>
     <div id="status" class="status"></div>
     <pre id="output"></pre>

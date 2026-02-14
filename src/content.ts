@@ -5,7 +5,7 @@
  * WebSketchCapture. Compilation to the IR grammar is a separate step.
  */
 
-import { DEFAULT_LIMITS } from '@mcptoolshop/websketch-ir';
+import { loadSettings } from './settings';
 
 // =============================================================================
 // Types
@@ -23,6 +23,7 @@ interface RawCapture {
     url: string;
     title: string;
     timestamp: string;
+    schemaVersion: string;
     viewport: { width: number; height: number };
   };
   warnings?: string[];
@@ -43,12 +44,13 @@ interface RawNode {
   children?: RawNode[];
 }
 
-// =============================================================================
-// Limits
-// =============================================================================
-
-const MAX_DEPTH = DEFAULT_LIMITS.maxDepth;
-const MAX_NODES = DEFAULT_LIMITS.maxNodes;
+interface CaptureState {
+  nodeCount: number;
+  warnings: string[];
+  maxDepth: number;
+  maxNodes: number;
+  maxStringLength: number;
+}
 
 // =============================================================================
 // Message Handler
@@ -57,13 +59,20 @@ const MAX_NODES = DEFAULT_LIMITS.maxNodes;
 // Listen for capture requests from popup
 chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) => {
   if (message.type === 'CAPTURE_PAGE') {
-    try {
-      const capture = capturePage();
-      sendResponse({ success: true, capture });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      sendResponse({ success: false, error: errorMessage });
-    }
+    loadSettings()
+      .then((limits) => {
+        try {
+          const capture = capturePage(limits.maxDepth, limits.maxNodes, limits.maxStringLength);
+          sendResponse({ success: true, capture });
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          sendResponse({ success: false, error: errorMessage });
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        sendResponse({ success: false, error: errorMessage });
+      });
     return true; // Keep channel open for async response
   }
 });
@@ -75,8 +84,8 @@ chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) =
 /**
  * Capture the current page as a raw DOM representation.
  */
-function capturePage(): RawCapture {
-  const state = { nodeCount: 0, warnings: [] as string[] };
+function capturePage(maxDepth: number, maxNodes: number, maxStringLength: number): RawCapture {
+  const state: CaptureState = { nodeCount: 0, warnings: [], maxDepth, maxNodes, maxStringLength };
   const root = captureElement(document.documentElement, 0, state);
 
   const capture: RawCapture = {
@@ -85,6 +94,7 @@ function capturePage(): RawCapture {
       url: window.location.href,
       title: document.title,
       timestamp: new Date().toISOString(),
+      schemaVersion: '0.1',
       viewport: {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -103,11 +113,7 @@ function capturePage(): RawCapture {
  * Recursively capture an element and its children.
  * Respects depth and node count limits.
  */
-function captureElement(
-  element: Element,
-  depth: number,
-  state: { nodeCount: number; warnings: string[] },
-): RawNode {
+function captureElement(element: Element, depth: number, state: CaptureState): RawNode {
   state.nodeCount++;
 
   const computedStyle = window.getComputedStyle(element);
@@ -117,7 +123,7 @@ function captureElement(
     type: element.tagName,
     id: element.id || undefined,
     classes: element.className ? element.className.split(' ').filter(Boolean) : undefined,
-    text: getTextContent(element),
+    text: getTextContent(element, state.maxStringLength),
     bounds: element.getBoundingClientRect(),
     styles: {
       display: computedStyle.display,
@@ -127,16 +133,18 @@ function captureElement(
   };
 
   // Check limits before recursing into children
-  if (depth >= MAX_DEPTH) {
+  if (depth >= state.maxDepth) {
     if (element.children.length > 0) {
-      state.warnings.push(`Depth limit (${MAX_DEPTH}) reached at ${element.tagName}#${element.id || '?'} — ${element.children.length} children skipped`);
+      state.warnings.push(
+        `Depth limit (${state.maxDepth}) reached at ${element.tagName}#${element.id || '?'} — ${element.children.length} children skipped`,
+      );
     }
     return node;
   }
 
-  if (state.nodeCount >= MAX_NODES) {
+  if (state.nodeCount >= state.maxNodes) {
     if (element.children.length > 0) {
-      state.warnings.push(`Node limit (${MAX_NODES}) reached — remaining children skipped`);
+      state.warnings.push(`Node limit (${state.maxNodes}) reached — remaining children skipped`);
     }
     return node;
   }
@@ -144,8 +152,10 @@ function captureElement(
   // Capture children (indexed loop — HTMLCollection lacks [Symbol.iterator] in ES2022)
   const children: RawNode[] = [];
   for (let i = 0; i < element.children.length; i++) {
-    if (state.nodeCount >= MAX_NODES) {
-      state.warnings.push(`Node limit (${MAX_NODES}) reached — ${element.children.length - children.length} siblings skipped`);
+    if (state.nodeCount >= state.maxNodes) {
+      state.warnings.push(
+        `Node limit (${state.maxNodes}) reached — ${element.children.length - children.length} siblings skipped`,
+      );
       break;
     }
     const child = element.children[i];
@@ -162,9 +172,9 @@ function captureElement(
 }
 
 /**
- * Get direct text content (not including children)
+ * Get direct text content (not including children), truncated to maxStringLength.
  */
-function getTextContent(element: Element): string | undefined {
+function getTextContent(element: Element, maxStringLength: number): string | undefined {
   let text = '';
   for (let i = 0; i < element.childNodes.length; i++) {
     const childNode = element.childNodes[i];
@@ -172,7 +182,11 @@ function getTextContent(element: Element): string | undefined {
       text += childNode.textContent?.trim() || '';
     }
   }
-  return text || undefined;
+  if (!text) return undefined;
+  if (text.length > maxStringLength) {
+    return text.slice(0, maxStringLength);
+  }
+  return text;
 }
 
 console.log('WebSketch content script loaded');

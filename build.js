@@ -11,7 +11,7 @@ const staticDir = join(__dirname, 'src', 'static');
 // Required assets for a functional extension
 const REQUIRED_ASSETS = {
   icons: ['icon16.png', 'icon48.png', 'icon128.png'],
-  html: ['popup.html'],
+  html: ['popup.html', 'options.html'],
 };
 
 // Ensure dist directory exists
@@ -93,7 +93,7 @@ function generateManifest() {
     name: 'WebSketch Capture',
     version: '0.1.0',
     description: 'Capture web pages as WebSketch IR',
-    permissions: ['activeTab', 'scripting'],
+    permissions: ['activeTab', 'scripting', 'storage'],
     action: {
       default_popup: 'popup.html',
       default_icon: {
@@ -102,6 +102,7 @@ function generateManifest() {
         '128': 'icons/icon128.png',
       },
     },
+    options_page: 'options.html',
     icons: {
       '16': 'icons/icon16.png',
       '48': 'icons/icon48.png',
@@ -122,7 +123,7 @@ function generateManifest() {
 
 // Build configuration
 const buildConfig = {
-  entryPoints: [join(srcDir, 'content.ts'), join(srcDir, 'popup.ts')],
+  entryPoints: [join(srcDir, 'content.ts'), join(srcDir, 'popup.ts'), join(srcDir, 'options.ts')],
   bundle: true,
   outdir: distDir,
   format: 'iife',
