@@ -106,7 +106,13 @@ chore: update dependencies
 
 ### Testing
 
-Write tests for new features:
+Write tests for new features.
+
+#### Test Quality
+
+Placeholder tests are not allowed on `main`. If a feature needs tests but you can't write them yet, use `it.skip('description', ...)` with a link to a tracking issue. The CI will reject patterns like `expect(true).toBe(true)` or `expect(1 + 1).toBe(2)`.
+
+Example:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
