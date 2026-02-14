@@ -131,6 +131,10 @@ const buildConfig = {
   minify: !process.argv.includes('--watch'),
   sourcemap: process.argv.includes('--watch'),
   logLevel: 'info',
+  // websketch-ir's text.js uses dynamic import("crypto") for fingerprinting.
+  // The extension doesn't use fingerprinting — mark crypto as external so
+  // esbuild doesn't fail trying to bundle a Node built-in for the browser.
+  external: ['crypto'],
 };
 
 // Main build function
