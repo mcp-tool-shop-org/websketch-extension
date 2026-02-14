@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/websketch-logo.png" alt="WebSketch" width="400">
+</p>
+
 # websketch-extension
 
 [![CI - Build & Validate Extension](https://github.com/mcp-tool-shop-org/websketch-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/websketch-extension/actions/workflows/ci.yml)
