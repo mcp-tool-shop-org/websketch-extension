@@ -9,12 +9,24 @@
 
 Chrome extension to capture web pages as [WebSketch IR](https://github.com/mcp-tool-shop-org/websketch-ir).
 
+## Getting Started
+
+1. Build and load the extension (see [Installation](#installation))
+2. Navigate to any web page and click the WebSketch icon
+3. Click "Capture Current Page" -- the capture JSON is copied to clipboard
+4. Validate: `websketch validate capture.json` or paste into the [demo](https://mcptoolshop.com)
+5. Visualize: `websketch render capture.json` or use the demo's Tree/ASCII views
+
+Configure limits via Settings (gear icon in popup). See the full [workflow guide](https://github.com/mcp-tool-shop-org/websketch-ir#getting-started).
+
 ## Features
 
 - 🎯 One-click page capture
 - 📋 Automatic clipboard copy
 - 🌳 Full DOM tree capture with styles
 - 📏 Element bounds and positioning
+- ⚙️ Configurable limits (maxDepth, maxNodes, maxStringLength)
+- ⚠️ Warning banners when capture is truncated
 - ⚡ Fast, lightweight, no external dependencies
 
 ## Installation
